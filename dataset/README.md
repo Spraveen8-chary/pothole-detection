@@ -11,4 +11,5 @@ The `Dataset` directory is intended to store the dataset used for training the p
 [Download Pothole Detection Dataset](https://www.kaggle.com/datasets/rajdalsaniya/pothole-detection-dataset)
 
 ## Usage
-Once you download the dataset, extract the contents of `archive.zip` and place the images and labels in the appropriate directory structure as expected by the ingestion scripts in the `data_handling` folder. This will ensure the model can access the necessary data during training and prediction.
+Once you download the dataset, the ingestion functions in the `data_handling` folder will automatically handle the extraction of the contents. Ensure that the downloaded `archive.zip` file is accessible by the script, which will then load the images and labels into the `Extracted_Data` directory structure required for training and prediction.
+
