@@ -10,19 +10,19 @@ class DataIngestor(ABC):
         """Abstract method to ingest data from a given file."""
         pass
 
+def load_image(image_path: str, target_size: tuple = (256, 256)) -> np.ndarray:
+
+    """Loads and processes a single image."""
+
+    image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError(f"Image not found at {image_path}")
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = cv2.resize(image, target_size)
+    return image / 255.0  # Normalize to [0, 1]
 
 class ZipDataIngestor(DataIngestor):
 
-    def load_image(self, image_path: str, target_size: tuple = (256, 256)) -> np.ndarray:
-
-        """Loads and processes a single image."""
-
-        image = cv2.imread(image_path)
-        if image is None:
-            raise ValueError(f"Image not found at {image_path}")
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, target_size)
-        return image / 255.0  # Normalize to [0, 1]
 
     def ingest(self, file_path: str) -> dict:
 
@@ -61,7 +61,7 @@ class ZipDataIngestor(DataIngestor):
             for image_file in image_files:
                 try:
                     image_path = os.path.join(image_folder, image_file)
-                    image = self.load_image(image_path)
+                    image = load_image(image_path)
                     images.append(image)
                 except Exception as e:
                     print(f"Error loading {image_file}: {e}")
@@ -82,7 +82,7 @@ class DataIngestorFactory:
 
 
 if __name__ == '__main__':
-    file_path = ".\\pothole detection\\dataset\\archive.zip"
+    file_path = "..\\pothole detection\\dataset\\archive.zip"
     data_ingestor = DataIngestorFactory.get_data_ingestor(file_path)
     datasets = data_ingestor.ingest(file_path)
 
