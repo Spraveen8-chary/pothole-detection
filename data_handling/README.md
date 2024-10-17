@@ -1,6 +1,3 @@
-
-### `data_handling/README.md`
-
 # Data Handling Directory
 
 The `data_handling` directory is dedicated to the ingestion and preprocessing of data required for training the CNN model.
