@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import numpy as np
+import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras import models, layers, optimizers
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -14,7 +15,7 @@ class CNN_Pothole_model:
     y_val : np.ndarray 
     verbose : int = 1
     batch_size: int = 32
-    epochs : int = 100
+    epochs : int = 50
     def ImageDataGeneration(self):
         """Data augmentation configuration."""
         return (ImageDataGenerator(
@@ -105,7 +106,7 @@ class CNN_Pothole_model:
         model.compile(optimizer=optimizers.Adam(learning_rate=0.0001), loss=self.custom_loss)
         
         # Train the model using the augmented data
-        model.fit(
+        history = model.fit(
             data_gen.flow(self.X_train, self.y_train, batch_size=self.batch_size),
             validation_data=(self.X_val, self.y_val),
             epochs=self.epochs,
@@ -113,5 +114,31 @@ class CNN_Pothole_model:
             steps_per_epoch=len(self.X_train) // self.batch_size,
         )
         
-        return model
+        return model, history
     
+    def loss_vs_val_loss(self, loss:list, val_loss:list):
+        plt.figure(figsize=(12, 6))
+        plt.plot(loss, label='Train Loss', color='blue')
+        plt.plot(val_loss, label='Validation Loss', color='orange')
+        plt.title('Model Loss During Training')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+        
+    
+
+if __name__=='__main__':
+    X_train = np.random.rand(1000, 256, 256, 3)
+    X_val = np.random.rand(200, 256, 256, 3)
+    y_train = np.random.rand(1000, MAX_POTHOLES*5)
+    y_val = np.random.rand(200, MAX_POTHOLES*5)
+
+    model = CNN_Pothole_model(X_train, X_val, y_train, y_val)
+
+    trained_model, history = model.train()
+
+    print(trained_model.summary())
+    
+    model.loss_vs_val_loss(history.history['loss'], history.history['val_loss'])
